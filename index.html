@@ -3,206 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intelligence System | Pro_Abraham</title>
+    <title>Enterprise Intelligence Hub | Abraham</title>
     <style>
         :root {
-            --primary: #3b82f6;
-            --bg: #020617;
-            --card: #0f172a;
-            --border: #1e293b;
-            --text: #f8fafc;
-            --text-dim: #94a3b8;
-            --accent: #10b981;
+            --primary: #3b82f6; --bg: #020617; --sidebar: #010409;
+            --card: #0f172a; --border: #1e293b; --text: #f8fafc;
+            --text-dim: #94a3b8; --success: #10b981; --warning: #f59e0b;
         }
 
-        * { box-sizing: border-box; transition: all 0.3s ease; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        /* --- SIDEBAR --- */
-        .sidebar { width: 320px; background: #010409; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; }
-        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
-        .logo-icon { width: 12px; height: 12px; background: var(--primary); border-radius: 2px; }
+        /* --- BARRA LATERAL (MENÚ) --- */
+        .sidebar { width: 80px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
+        .nav-item { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 20px; color: var(--text-dim); border: 1px solid transparent; }
+        .nav-item:hover { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
+        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
 
-        .section-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin: 20px 0 10px; }
-        .console { flex: 1; background: #000; border-radius: 8px; padding: 12px; font-family: 'SFMono-Regular', monospace; font-size: 0.7rem; overflow-y: auto; color: #88c0d0; border: 1px solid var(--border); }
-        .db-view { height: 150px; background: rgba(255,255,255,0.02); border-radius: 8px; margin-top: 10px; padding: 10px; font-size: 0.65rem; border: 1px solid var(--border); }
-
-        /* --- MAIN --- */
+        /* --- CONTENEDOR PRINCIPAL --- */
         .main { flex: 1; display: flex; flex-direction: column; }
-        header { padding: 20px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(10px); }
-        
-        .sys-info { display: flex; gap: 25px; }
-        .sys-item { display: flex; flex-direction: column; }
-        .sys-label { font-size: 0.6rem; color: var(--text-dim); }
-        .sys-val { font-size: 0.8rem; font-weight: 600; color: var(--primary); }
+        header { height: 70px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 30px; justify-content: space-between; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(8px); }
 
-        .content { padding: 30px; overflow-y: auto; flex: 1; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .view-section { flex: 1; padding: 30px; overflow-y: auto; display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.3s ease; }
 
-        /* --- CARDS --- */
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
-        .card.active { border-color: var(--primary); box-shadow: 0 0 20px rgba(59, 130, 246, 0.15); }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        .user-name { font-weight: 700; font-size: 0.95rem; }
-        .status-pill { font-size: 0.6rem; padding: 2px 8px; border-radius: 10px; background: rgba(148, 163, 184, 0.1); color: var(--text-dim); }
-        .active .status-pill { background: rgba(16, 185, 129, 0.1); color: var(--accent); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .prog-bg { width: 100%; height: 4px; background: #020617; border-radius: 2px; margin: 15px 0; }
-        .prog-fill { width: 0%; height: 100%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        /* --- PESTAÑA 1: CONSOLA --- */
+        .console-box { background: #000; border-radius: 12px; border: 1px solid var(--border); height: 80vh; padding: 20px; font-family: 'SFMono-Regular', monospace; font-size: 0.8rem; overflow-y: auto; color: #88c0d0; }
+        .log-entry { margin-bottom: 8px; border-left: 2px solid var(--primary); padding-left: 10px; }
 
-        .details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.7rem; color: var(--text-dim); }
-        .detail-box { background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px; }
-        .detail-box b { color: var(--text); display: block; margin-top: 2px; }
+        /* --- PESTAÑA 2: CUENTAS (26 UNIDADES) --- */
+        .grid-accounts { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+        .account-mini { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 15px; }
+        .acc-header { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 10px; }
+        .status-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .status-active { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .status-suspended { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
 
-        /* --- AUTH SCREEN --- */
+        /* --- PESTAÑA 3: DATABASE --- */
+        .db-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        .db-table th, .db-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .db-table th { background: rgba(255,255,255,0.05); color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; }
+        .link-placeholder { color: var(--primary); text-decoration: underline; cursor: pointer; }
+
+        /* --- PANTALLA BLOQUEO --- */
         #lock { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .auth-card { background: var(--card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); text-align: center; width: 400px; }
-        .input-auth { background: #000; border: 1px solid var(--border); padding: 12px; width: 100%; border-radius: 8px; color: #fff; margin: 20px 0; text-align: center; font-family: inherit; }
-        .btn-auth { background: var(--primary); color: #fff; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; }
     </style>
 </head>
 <body>
 
 <div id="lock">
-    <div class="auth-card">
-        <div class="logo-icon" style="margin: 0 auto 20px; width: 40px; height: 40px;"></div>
-        <h2 style="margin:0">Abraham Intelligence</h2>
-        <p style="color: var(--text-dim); font-size: 0.8rem;">Ingrese credenciales de acceso nivel Root</p>
-        <input type="password" class="input-auth" id="pass" placeholder="Password">
-        <button class="btn-auth" onclick="unlock()">Desbloquear Sistema</button>
+    <div style="background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid var(--border); text-align: center; width: 350px;">
+        <h2 style="margin:0 0 20px 0">Abraham OS</h2>
+        <input type="password" id="pass" placeholder="Password" style="width:100%; padding:12px; margin-bottom:20px; background:#000; border:1px solid var(--border); color:#fff; border-radius:8px; text-align:center;">
+        <button onclick="unlock()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">ACCEDER</button>
     </div>
 </div>
 
 <div class="sidebar">
-    <div class="logo"><div class="logo-icon"></div> PRO_ABRAHAM OS</div>
-    
-    <div class="section-label">Real-time Terminal</div>
-    <div class="console" id="terminal">
-        <div>> System standby...</div>
-    </div>
-
-    <div class="section-label">Database Index</div>
-    <div class="db-view" id="db"></div>
+    <div style="width:40px; height:40px; background:var(--primary); border-radius:8px; margin-bottom:40px;"></div>
+    <div class="nav-item active" onclick="showView('console', this)" title="Consola de Registros">📜</div>
+    <div class="nav-item" onclick="showView('accounts', this)" title="Cuentas Activas">👥</div>
+    <div class="nav-item" onclick="showView('database', this)" title="Base de Datos">📁</div>
 </div>
 
 <div class="main">
     <header>
-        <div class="sys-info">
-            <div class="sys-item"><span class="sys-label">UPLINK</span><span class="sys-val">PRO_ABRAHAM</span></div>
-            <div class="sys-item"><span class="sys-label">MEM_USE</span><span class="sys-val" id="mem">14.2 GB</span></div>
-            <div class="sys-item"><span class="sys-label">LATENCY</span><span class="sys-val">12ms</span></div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div style="text-align: right;"><div style="font-weight: 700; font-size: 0.9rem;">Abraham</div><div style="font-size: 0.6rem; color: var(--accent);">ROOT ACCESS</div></div>
-            <div style="width: 35px; height: 35px; background: var(--primary); border-radius: 50%;"></div>
+        <h2 id="view-title" style="margin:0; font-size:1.2rem;">Consola de Registros</h2>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <span style="font-size:0.75rem; color:var(--success)">● SYSTEM ONLINE</span>
+            <span style="font-weight:bold; border-left:1px solid var(--border); padding-left:15px;">Abraham Root</span>
         </div>
     </header>
 
-    <div class="content">
-        <div class="grid" id="grid"></div>
+    <div id="console" class="view-section active">
+        <div class="console-box" id="log-container">
+            <div class="log-entry">> [SYSTEM] Núcleo cargado exitosamente.</div>
+            <div class="log-entry">> [LINK] Conexión establecida con pro_abraham.</div>
+        </div>
+    </div>
+
+    <div id="accounts" class="view-section">
+        <div class="grid-accounts" id="account-grid"></div>
+    </div>
+
+    <div id="database" class="view-section">
+        <table class="db-table">
+            <thead>
+                <tr>
+                    <th>Usuario Instagram</th>
+                    <th>Estado</th>
+                    <th>Fotos/Archivos</th>
+                    <th>Registro ID</th>
+                </tr>
+            </thead>
+            <tbody id="db-body">
+                </tbody>
+        </table>
     </div>
 </div>
 
 <script>
-    const agentNames = ["INTEL_A", "INTEL_B", "INTEL_C", "INTEL_D", "SYNC_01", "SYNC_02", "SCAN_X", "SCAN_Y", "CORE_01", "CORE_02", "UPLINK_A", "UPLINK_B", "DATA_X", "DATA_Y", "NODE_01", "NODE_02"];
     const targets = ["Alexander", "Eduardo", "Santiago", "Valentina", "Mateo", "Leonardo", "Ricardo", "Camila", "Rodrigo", "Mauricio"];
     
     function unlock() {
-        const p = document.getElementById('pass').value;
-        if(p === "abraham") { // CONTRASEÑA: abraham
+        if(document.getElementById('pass').value === "abraham") {
             document.getElementById('lock').style.display = 'none';
             init();
-        } else {
-            alert("Acceso Denegado");
-        }
+        } else { alert("Acceso denegado"); }
+    }
+
+    function showView(viewId, btn) {
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        btn.classList.add('active');
+        
+        const titles = { 'console': 'Consola de Registros', 'accounts': 'Gestión de Cuentas (26 Unidades)', 'database': 'Base de Datos de Usuarios' };
+        document.getElementById('view-title').innerText = titles[viewId];
     }
 
     function init() {
-        const grid = document.getElementById('grid');
-        agentNames.forEach((name, i) => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.id = `card-${i}`;
-            card.innerHTML = `
-                <div class="card-header">
-                    <div><div class="user-name" id="name-${i}">Standby</div><div style="font-size: 0.6rem; color: var(--text-dim);">${name}</div></div>
-                    <div class="status-pill" id="status-${i}">READY</div>
-                </div>
-                <div class="details">
-                    <div class="detail-box">TARGET<b>@---</b></div>
-                    <div class="detail-box">UPTIME<b>0.0s</b></div>
-                </div>
-                <div class="prog-bg"><div class="prog-fill" id="bar-${i}"></div></div>
-                <div class="details">
-                    <div class="detail-box">SYNC<b>0%</b></div>
-                    <div class="detail-box">DATA<b>0 KB</b></div>
+        // Generar 26 Cuentas
+        const grid = document.getElementById('account-grid');
+        for(let i=1; i<=26; i++) {
+            const status = i % 5 === 0 ? 'SUSPENSIÓN' : 'ACTIVA';
+            const statusClass = i % 5 === 0 ? 'status-suspended' : 'status-active';
+            grid.innerHTML += `
+                <div class="account-mini">
+                    <div class="acc-header">
+                        <b>Unidad_${i.toString().padStart(2,'0')}</b>
+                        <span class="status-tag ${statusClass}">${status}</span>
+                    </div>
+                    <div style="font-size:0.65rem; color:var(--text-dim);">
+                        Ping: ${Math.floor(Math.random()*20)+10}ms<br>
+                        Uptime: ${(Math.random()*24).toFixed(1)}h
+                    </div>
                 </div>
             `;
-            grid.appendChild(card);
-        });
-        startLoop();
+        }
+        startSimulation();
     }
 
     function addLog(msg) {
-        const term = document.getElementById('terminal');
+        const container = document.getElementById('log-container');
         const div = document.createElement('div');
-        div.style.marginBottom = '4px';
+        div.className = 'log-entry';
         div.innerHTML = `<span style="color:var(--primary)">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
-        term.prepend(div);
-        if(term.children.length > 30) term.lastChild.remove();
+        container.prepend(div);
+        if(container.children.length > 40) container.lastChild.remove();
     }
 
-    function addToDB(name) {
-        const db = document.getElementById('db');
-        const entry = document.createElement('div');
-        entry.style.color = 'var(--text-dim)';
-        entry.innerHTML = `> REG_${Math.floor(Math.random()*10000)} | @${name} | DB_SUCCESS`;
-        db.prepend(entry);
+    function addToDB(user) {
+        const body = document.getElementById('db-body');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><b>@${user}</b></td>
+            <td style="color:var(--success)">Sincronizado</td>
+            <td><span class="link-placeholder">Ver_Media_${Math.floor(Math.random()*999)}.jpg</span></td>
+            <td style="font-family:monospace; color:var(--text-dim)">#ID-${Math.floor(Math.random()*100000)}</td>
+        `;
+        body.prepend(row);
+        if(body.children.length > 15) body.lastChild.remove();
     }
 
-    function runExtraction(id) {
-        const card = document.getElementById(`card-${id}`);
-        if(card.classList.contains('active')) return;
-
-        const name = targets[Math.floor(Math.random()*targets.length)] + "_" + Math.floor(Math.random()*99);
-        card.classList.add('active');
-        card.querySelector('.user-name').innerText = "@" + name;
-        card.querySelector('.status-pill').innerText = "EXTRACTING";
-        
-        addLog(`Inyectando protocolo en <b style="color:white">@${name}</b>...`);
-
-        let p = 0;
-        const interval = setInterval(() => {
-            p += Math.floor(Math.random()*10) + 2;
-            if(p > 100) p = 100;
-            
-            card.querySelector('.prog-fill').style.width = p + "%";
-            card.querySelectorAll('b')[0].innerText = "@" + name;
-            card.querySelectorAll('b')[2].innerText = p + "%";
-            card.querySelectorAll('b')[3].innerText = (p * 4.2).toFixed(1) + " MB";
-
-            if(p >= 100) {
-                clearInterval(interval);
-                addLog(`Sincronización de <b style="color:var(--accent)">@${name}</b> enviada a pro_abraham`);
-                addToDB(name);
-                setTimeout(() => {
-                    card.classList.remove('active');
-                    card.querySelector('.status-pill').innerText = "READY";
-                    card.querySelector('.prog-fill').style.width = "0%";
-                    card.querySelector('.user-name').innerText = "Standby";
-                }, 3000);
-            }
-        }, 600);
-    }
-
-    function startLoop() {
+    function startSimulation() {
         setInterval(() => {
-            const rand = Math.floor(Math.random()*16);
-            runExtraction(rand);
-            document.getElementById('mem').innerText = (14.2 + (Math.random()*0.5)).toFixed(1) + " GB";
-        }, 2000);
+            const user = targets[Math.floor(Math.random()*targets.length)] + "_" + Math.floor(Math.random()*99);
+            addLog(`Extracción iniciada en <b style="color:white">@${user}</b>. Enviando a pro_abraham...`);
+            
+            setTimeout(() => {
+                addLog(`Sincronización completa: <b style="color:var(--success)">@${user}</b> almacenado en base de datos.`);
+                addToDB(user);
+            }, 3000);
+        }, 5000);
     }
 </script>
+
 </body>
 </html>
-
