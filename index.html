@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abraham Intelligence v4.0 | Ultra-Sync</title>
+    <title>Abraham Intelligence Hub | v4.2 Fix</title>
     <style>
         :root {
             --primary: #3b82f6; --bg: #020617; --sidebar: #010409;
@@ -14,13 +14,10 @@
         * { box-sizing: border-box; transition: all 0.2s ease; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        /* --- SIDEBAR --- */
         .sidebar { width: 80px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 100; }
         .nav-item { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 20px; color: var(--text-dim); border: 1px solid transparent; font-size: 1.2rem; }
-        .nav-item:hover { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
         .nav-item.active { background: var(--primary); color: white; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
 
-        /* --- MAIN --- */
         .main { flex: 1; display: flex; flex-direction: column; }
         header { height: 70px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 30px; justify-content: space-between; background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(12px); }
 
@@ -29,40 +26,30 @@
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- CONSOLA --- */
-        .console-box { background: #000; border-radius: 12px; border: 1px solid var(--border); height: 78vh; padding: 20px; font-family: 'Consolas', monospace; font-size: 0.85rem; overflow-y: auto; color: #d8dee9; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); }
-        .log-entry { margin-bottom: 8px; border-left: 3px solid var(--primary); padding-left: 12px; animation: flash 0.3s ease; }
-        @keyframes flash { from { background: rgba(255,255,255,0.1); } to { background: transparent; } }
+        .console-box { background: #000; border-radius: 12px; border: 1px solid var(--border); height: 78vh; padding: 20px; font-family: 'Consolas', monospace; font-size: 0.85rem; overflow-y: auto; color: #d8dee9; }
+        .log-entry { margin-bottom: 8px; border-left: 3px solid var(--primary); padding-left: 12px; }
 
-        /* --- UNIDADES --- */
         .grid-accounts { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .account-mini { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; position: relative; }
+        .account-mini { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
         .account-mini.working { border-color: var(--primary); animation: pulse 1s infinite; }
-        .account-mini.error-shake { border-color: var(--danger); animation: shake 0.4s ease; }
-
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
 
-        /* --- AUDIO UI --- */
-        .audio-ctrl { margin-top: auto; padding: 20px 0; border-top: 1px solid var(--border); width: 100%; text-align: center; }
-        
         #lock { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .audio-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; margin-top: auto; }
     </style>
 </head>
 <body>
 
-<audio id="bg-music" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3"></audio>
+<audio id="bg-music" loop src="https://codeskulptor-demos.commondatastorage.googleapis.com/descent/background%20music.mp3"></audio>
 <audio id="snd-success" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
 <audio id="snd-fail" src="https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3"></audio>
-<audio id="snd-request" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
-<audio id="snd-alert" src="https://assets.mixkit.co/active_storage/sfx/1003/1003-preview.mp3"></audio>
+<audio id="snd-warn" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
 
 <div id="lock">
-    <div style="background: var(--card); padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; width: 380px;">
-        <h2 style="color:var(--primary)">Abraham Intelligence Hub</h2>
-        <p style="font-size:0.8rem; color:var(--text-dim)">Protocolo de Sincronización v4.0</p>
+    <div style="background: var(--card); padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; width: 350px;">
+        <h2 style="color:var(--primary)">Abraham Intelligence</h2>
         <input type="password" id="pass" placeholder="Password" style="width:100%; padding:14px; margin:20px 0; background:#000; border:1px solid var(--border); color:#fff; border-radius:10px; text-align:center;">
-        <button onclick="unlock()" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">INICIAR SESIÓN</button>
+        <button onclick="unlock()" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">DECRYPT & ENTER</button>
     </div>
 </div>
 
@@ -70,21 +57,18 @@
     <div class="nav-item active" onclick="showView('console', this)">📜</div>
     <div class="nav-item" onclick="showView('accounts', this)">👥</div>
     <div class="nav-item" onclick="showView('database', this)">📁</div>
-    
-    <div class="audio-ctrl">
-        <button id="mu-btn" onclick="toggleMusic()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">🔇</button>
-    </div>
+    <button id="mu-btn" class="audio-btn" onclick="toggleMusic()">🔇</button>
 </div>
 
 <div class="main">
     <header>
-        <div><span style="color:var(--text-dim)">KERNEL:</span> <span style="color:var(--primary)">v4.0.26_STABLE</span></div>
-        <div style="font-weight:bold; letter-spacing:1px;">OPERADOR: PRO_ABRAHAM</div>
+        <div style="font-size: 0.8rem; color: var(--text-dim)">UPLINK_STATUS: <span style="color:var(--success)">ENCRYPTED</span></div>
+        <div style="font-weight:bold;">OPERADOR_ABRAHAM</div>
     </header>
 
     <div id="console" class="view-section active">
         <div class="console-box" id="log-container">
-            <div class="log-entry" style="border-color:var(--success)">> [INIT] Motores de vibración y audio cargados.</div>
+            <div class="log-entry">> [SYSTEM] Núcleo cargado. Esperando interacción...</div>
         </div>
     </div>
 
@@ -94,13 +78,6 @@
 
     <div id="database" class="view-section">
         <table style="width:100%; border-collapse:collapse; background:var(--card); border-radius:12px; overflow:hidden;">
-            <thead style="background:rgba(255,255,255,0.05)">
-                <tr>
-                    <th style="padding:15px; text-align:left">USUARIO</th>
-                    <th style="padding:15px; text-align:left">ESTADO</th>
-                    <th style="padding:15px; text-align:left">ID_HASH</th>
-                </tr>
-            </thead>
             <tbody id="db-body"></tbody>
         </table>
     </div>
@@ -109,8 +86,7 @@
 <script>
     const agentNames = ["Viper-1", "Shadow-2", "Ghost-3", "Alpha-4", "Raven-5", "Titan-6", "Omega-7", "Specter-8", "Phantom-9", "Neon-10", "Cobra-11", "Delta-12", "Frost-13", "Blade-14", "Rogue-15", "Ozone-16", "Sniper-17", "Vector-18", "Matrix-19", "Aero-20", "Zion-21", "Hunter-22", "Storm-23", "Proxy-24", "Echo-25", "Zenith-26"];
     
-    // Pool de más de 60 usuarios únicos para evitar repeticiones
-    const targetPool = ["Santi_Vlogs", "Dany_Garcia", "Vale.Luna", "Ximena_R", "Mateo_X", "Leo_Glez", "Cami.Star", "Fer_T", "Adrián_Net", "Sofía_Fit", "Diego.Dev", "Isa_King", "Nico_Z", "Valeria.J", "Seba_R", "Dani_S", "Gaby_H", "Andrés_Q", "Pau_L", "Juli_D", "Moni_V", "Elena.K", "Luis_Tech", "Carla_X", "Hugo_M", "Sara_N", "Kevin_G", "Rosa_L", "Beto_J", "Lara_W", "Iván_Z", "Clau_P", "Raúl_V", "Noelia_S", "Mario_K", "Tania_D", "Oscar_L", "Julia_Q", "Fabi_M", "Saúl_X", "Yadi_T", "Erick_B", "Gime_H", "Ángel_F", "Susi_R", "Polo_N", "Katia_S", "Mau_Pro", "Rorro_G", "Lili_D", "Fede_X", "Tete_M", "Javi_L", "Cata_S", "Gonza_Q", "Nati_P", "Santi_K", "Vero_V", "Paco_W", "Lety_Z"];
+    const targetPool = ["Santi_X", "Vale_Luna", "Xime_R", "Mateo_V", "Leo_G", "Cami_P", "Fer_T", "Adri_M", "Sofi_F", "Diego_D", "Isa_K", "Nico_S", "Vale_J", "Seba_B", "Dani_R", "Gaby_H", "Andres_Q", "Pau_Z", "Juli_D", "Moni_V", "Elena_K", "Luis_Tech", "Hugo_N", "Sara_X", "Kevin_G", "Beto_M", "Lara_P", "Ivan_V", "Clau_S", "Raul_B", "Noelia_X", "Mario_Q", "Tania_F", "Oscar_Z", "Julia_H", "Angel_D", "Mau_Pro", "Rorro_S", "Lili_V", "Javi_P"];
 
     let usedUsers = [];
     let isMusic = false;
@@ -118,21 +94,31 @@
     function unlock() {
         if(document.getElementById('pass').value === "abraham") {
             document.getElementById('lock').style.display = 'none';
-            playSnd('snd-request');
+            // Iniciamos música automáticamente al entrar si es posible
+            toggleMusic(); 
             init();
-        } else { vibrate(500); playSnd('snd-fail'); alert("PASSWORD INCORRECTO"); }
+        } else { vibrate(500); playSnd('snd-fail'); alert("ERROR"); }
     }
 
     function toggleMusic() {
         const mu = document.getElementById('bg-music');
-        if(!isMusic) { mu.play(); document.getElementById('mu-btn').innerText = '🎵'; }
-        else { mu.pause(); document.getElementById('mu-btn').innerText = '🔇'; }
-        isMusic = !isMusic;
+        if(!isMusic) {
+            mu.volume = 0.3;
+            mu.play().catch(() => console.log("User must click first"));
+            document.getElementById('mu-btn').innerText = '🎵';
+            isMusic = true;
+        } else {
+            mu.pause();
+            document.getElementById('mu-btn').innerText = '🔇';
+            isMusic = false;
+        }
     }
 
+    // FUNCIÓN CORREGIDA PARA SONIDOS CORTOS
     function playSnd(id) {
         const s = document.getElementById(id);
-        s.currentTime = 0;
+        s.pause();          // Detiene cualquier reproducción previa
+        s.currentTime = 0;  // Reinicia al segundo 0
         s.play().catch(() => {});
     }
 
@@ -156,7 +142,7 @@
                         <b style="font-size:0.7rem;">${name}</b>
                         <span style="font-size:0.5rem; color:var(--success)">●</span>
                     </div>
-                    <div id="task-${i}" style="font-size:0.55rem; color:var(--text-dim)">ESPERANDO...</div>
+                    <div id="task-${i}" style="font-size:0.55rem; color:var(--text-dim)">STANDBY</div>
                 </div>
             `;
         });
@@ -167,73 +153,49 @@
         const container = document.getElementById('log-container');
         const div = document.createElement('div');
         div.className = 'log-entry';
-        let color = 'var(--primary)';
         
-        if(type === 'success') { color = 'var(--success)'; playSnd('snd-success'); }
-        if(type === 'warn') { color = 'var(--warning)'; playSnd('snd-alert'); vibrate(100); }
-        if(type === 'error') { color = 'var(--danger)'; playSnd('snd-fail'); vibrate([200, 100, 200]); }
+        if(type === 'success') { playSnd('snd-success'); div.style.borderColor = 'var(--success)'; }
+        if(type === 'warn') { playSnd('snd-warn'); div.style.borderColor = 'var(--warning)'; vibrate(100); }
+        if(type === 'error') { playSnd('snd-fail'); div.style.borderColor = 'var(--danger)'; vibrate([200, 100, 200]); }
 
-        div.style.borderColor = color;
-        div.innerHTML = `<span style="color:${color}">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+        div.innerHTML = `<span style="color:var(--text-dim)">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
         container.prepend(div);
+        if(container.children.length > 50) container.lastChild.remove();
     }
 
     function startLoop() {
         setInterval(() => {
-            if(usedUsers.length >= targetPool.length) usedUsers = []; // Reset si se acaban
-            
-            let user;
-            do { user = targetPool[Math.floor(Math.random() * targetPool.length)]; } 
-            while(usedUsers.includes(user));
-            usedUsers.push(user);
-
+            let user = targetPool[Math.floor(Math.random() * targetPool.length)];
             const id = Math.floor(Math.random() * 26);
             const unit = document.getElementById(`acc-${id}`);
             const chance = Math.random();
 
             unit.classList.add('working');
-            document.getElementById(`task-${id}`).innerText = `PROCESANDO: @${user}`;
+            document.getElementById(`task-${id}`).innerText = `SCANNING: @${user}`;
 
             setTimeout(() => {
-                if(chance < 0.5) { // ÉXITO
-                    addLog(`SYNC_OK: Archivos de <b style="color:white">@${user}</b> movidos a pro_abraham/media/`, 'success');
-                    updateDB(user, 'VERIFICADO', 'success');
-                } 
-                else if(chance < 0.75) { // PRIVADO
-                    addLog(`PRIVADO: <b style="color:white">@${user}</b> detectado. Solicitud enviada automáticamente.`, 'warn');
-                    updateDB(user, 'PENDIENTE_REQ', 'warn');
-                } 
-                else if(chance < 0.9) { // FALLO DESCARGA
-                    unit.classList.add('error-shake');
-                    addLog(`FALLO: Error 403 en descarga de fotos de <b style="color:white">@${user}</b>.`, 'error');
-                    updateDB(user, 'DOWNLOAD_ERR', 'error');
-                    setTimeout(() => unit.classList.remove('error-shake'), 500);
-                }
-                else { // FALLO CONEXIÓN
-                    unit.classList.add('error-shake');
-                    addLog(`CRITICAL: Unidad ${agentNames[id]} perdió conexión con el nodo @${user}.`, 'error');
-                    updateDB(user, 'TIMEOUT_ERR', 'error');
-                    setTimeout(() => unit.classList.remove('error-shake'), 500);
+                if(chance < 0.6) {
+                    addLog(`SUCCESS: Data from <b style="color:white">@${user}</b> synced.`, 'success');
+                    updateDB(user, 'COMPLETED');
+                } else if(chance < 0.85) {
+                    addLog(`PRIVATE: <b style="color:white">@${user}</b> detected. Request sent.`, 'warn');
+                    updateDB(user, 'REQ_SENT');
+                } else {
+                    addLog(`CRITICAL: Node ${agentNames[id]} failed to reach @${user}.`, 'error');
+                    updateDB(user, 'FAILED');
                 }
                 unit.classList.remove('working');
-                document.getElementById(`task-${id}`).innerText = `ESPERANDO...`;
-            }, 3500);
-        }, 4500);
+                document.getElementById(`task-${id}`).innerText = `STANDBY`;
+            }, 3000);
+        }, 4000);
     }
 
-    function updateDB(user, status, type) {
+    function updateDB(user, status) {
         const body = document.getElementById('db-body');
         const row = document.createElement('tr');
-        let color = type === 'error' ? 'var(--danger)' : (type === 'warn' ? 'var(--warning)' : 'var(--success)');
-        row.innerHTML = `
-            <td style="padding:12px; border-bottom:1px solid var(--border)">@${user}</td>
-            <td style="padding:12px; border-bottom:1px solid var(--border); color:${color}">${status}</td>
-            <td style="padding:12px; border-bottom:1px solid var(--border); font-size:0.7rem; color:var(--text-dim)">#${Math.random().toString(36).substr(2, 9).toUpperCase()}</td>
-        `;
+        row.innerHTML = `<td style="padding:10px; border-bottom:1px solid var(--border)">@${user}</td><td style="padding:10px; border-bottom:1px solid var(--border)">${status}</td>`;
         body.prepend(row);
-        if(body.children.length > 20) body.lastChild.remove();
     }
 </script>
 </body>
 </html>
-
