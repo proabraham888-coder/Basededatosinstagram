@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abraham Intelligence Hub | v5.1 Fixed</title>
+    <title>Abraham OS v6.0 | Ultimate Edition</title>
     <style>
         :root {
             --primary: #3b82f6; --bg: #020617; --sidebar: #010409;
@@ -11,185 +11,176 @@
             --text-dim: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
         }
 
-        * { box-sizing: border-box; transition: all 0.2s ease; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; transition: all 0.3s ease; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); background-size: cover; background-position: center; color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        .sidebar { width: 80px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 100; }
-        .nav-item { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 20px; color: var(--text-dim); border: 1px solid transparent; font-size: 1.2rem; }
-        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        /* --- SIDEBAR --- */
+        .sidebar { width: 90px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 100; position: relative; }
+        .nav-item { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 15px; color: var(--text-dim); font-size: 1.3rem; border: 1px solid transparent; }
+        .nav-item:hover { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
+        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
 
-        .main { flex: 1; display: flex; flex-direction: column; }
-        header { height: 70px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 30px; justify-content: space-between; background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(12px); }
+        .credits { position: absolute; bottom: 10px; font-size: 0.5rem; text-align: center; color: var(--text-dim); padding: 0 5px; pointer-events: none; }
 
-        .view-section { flex: 1; padding: 30px; overflow-y: auto; display: none; }
-        .view-section.active { display: block; animation: slideUp 0.4s ease; }
+        /* --- MAIN CONTENT --- */
+        .main { flex: 1; display: flex; flex-direction: column; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(5px); }
+        header { height: 60px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 30px; justify-content: space-between; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .view-section { flex: 1; padding: 25px; overflow-y: auto; display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .console-box { background: #000; border-radius: 12px; border: 1px solid var(--border); height: 75vh; padding: 20px; font-family: 'Consolas', monospace; font-size: 0.85rem; overflow-y: auto; color: #d8dee9; }
-        .log-entry { margin-bottom: 10px; border-left: 3px solid var(--primary); padding-left: 12px; line-height: 1.4; }
+        /* --- COMPONENTES --- */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .console-box { background: #000; border-radius: 12px; height: 70vh; padding: 20px; font-family: 'Consolas', monospace; font-size: 0.85rem; overflow-y: auto; color: #d8dee9; border: 1px solid var(--border); }
         
-        .grid-accounts { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .account-mini { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
-        .working { border-color: var(--primary); animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+        .evidence-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .evidence-grid img { width: 100%; border-radius: 10px; border: 1px solid var(--border); filter: grayscale(0.5); transition: 0.3s; }
+        .evidence-grid img:hover { filter: grayscale(0); transform: scale(1.03); }
 
+        .review-card { border-left: 4px solid var(--success); padding-left: 15px; margin-bottom: 15px; }
+        
         #lock { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .lock-card { background: var(--card); padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; width: 350px; }
-        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 10px; text-align: center; outline: none; }
+        .wallpaper-tool { position: fixed; bottom: 20px; right: 20px; background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); z-index: 50; }
     </style>
 </head>
 <body>
 
-<audio id="snd-success" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
-<audio id="snd-fail" src="https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3"></audio>
-<audio id="snd-warn" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
-
 <div id="lock">
-    <div class="lock-card">
-        <h2 style="color:var(--primary); margin:0;">Abraham OS</h2>
-        <p style="font-size:0.8rem; color:var(--text-dim);">SYSTEM ACCESS REQUIRED</p>
-        <input type="password" id="passInput" placeholder="Contraseña">
-        <button onclick="checkPassword()" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; margin-top:20px; font-weight:bold; cursor:pointer;">ACCEDER</button>
+    <div style="text-align: center; background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid var(--border);">
+        <h2 style="color:var(--primary)">Abraham OS v6.0</h2>
+        <input type="password" id="passIn" placeholder="Password" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:8px; margin-top:15px; text-align:center;">
+        <button onclick="login()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px; margin-top:15px; cursor:pointer; font-weight:bold;">INGRESAR</button>
     </div>
 </div>
 
 <div class="sidebar">
-    <div class="nav-item active" onclick="showView('console', this)">📜</div>
-    <div class="nav-item" onclick="showView('accounts', this)">👥</div>
-    <div class="nav-item" onclick="showView('database', this)">📁</div>
-    <div class="nav-item" onclick="showView('playlist', this)">🎶</div>
-    <div class="nav-item" onclick="showView('suggest', this)">✉️</div>
+    <div class="nav-item active" onclick="showV('console', this)" title="Consola">📜</div>
+    <div class="nav-item" onclick="showV('playlist', this)" title="Música">🎵</div>
+    <div class="nav-item" onclick="showV('reviews', this)" title="Reseñas">⭐</div>
+    <div class="nav-item" onclick="showV('evidence', this)" title="Evidencias">📸</div>
+    <div class="nav-item" onclick="showV('soon', this)" title="Próximamente">⏳</div>
+    
+    <div class="credits">
+        © PRO_ABRAHAM<br>
+        Colaboradores:<br>
+        Eduardo YT VIP<br>
+        Gerardl Craftman
+    </div>
 </div>
 
 <div class="main">
     <header>
-        <div style="font-size: 0.8rem; color: var(--text-dim)">UPLINK: <span id="status-text" style="color:var(--success)">OFFLINE</span></div>
-        <div style="font-weight:bold;">OPERADOR_ABRAHAM</div>
+        <div style="font-size:0.8rem; color:var(--text-dim)">UPLINK: <span id="st" style="color:var(--danger)">OFFLINE</span></div>
+        <div style="font-weight:bold;">SISTEMA CENTRAL</div>
     </header>
 
     <div id="console" class="view-section active">
         <div class="console-box" id="log-container"></div>
     </div>
 
-    <div id="accounts" class="view-section">
-        <div class="grid-accounts" id="account-grid"></div>
+    <div id="playlist" class="view-section">
+        <div class="card" style="text-align:center;">
+            <h3>Reproductor en Vivo</h3>
+            <iframe id="yt" width="100%" height="400" src="" frameborder="0" allow="autoplay" style="border-radius:10px;"></iframe>
+            <p style="margin-top:10px; color:var(--text-dim)">Control de Playlist: Cyber-Mix</p>
+        </div>
     </div>
 
-    <div id="database" class="view-section">
-        <table style="width:100%; border-collapse:collapse; background:var(--card); border-radius:12px; overflow:hidden;">
-            <tbody id="db-body"></tbody>
-        </table>
+    <div id="reviews" class="view-section">
+        <div class="card">
+            <h3>Reseñas de Clientes</h3>
+            <div class="review-card">
+                <b>@User_01:</b> "Increíble la velocidad de respuesta, 100% confiable."
+            </div>
+            <div class="review-card">
+                <b>@Gamer_Pro:</b> "El mejor servicio de monitoreo que he probado."
+            </div>
+            <div class="review-card">
+                <b>@Dev_Girl:</b> "Abraham y su equipo son muy profesionales. Recomendado."
+            </div>
+            <div class="review-card">
+                <b>@Anon_X:</b> "Copia de seguridad realizada con éxito. Gracias."
+            </div>
+        </div>
     </div>
 
-    <div id="playlist" class="view-section" style="text-align:center;">
-        <h3>Canal de Audio</h3>
-        <iframe id="yt-player" width="300" height="200" src="" frameborder="0" allow="autoplay"></iframe>
+    <div id="evidence" class="view-section">
+        <h3>Evidencias de Trabajo</h3>
+        <div class="evidence-grid">
+            <img src="https://i.pinimg.com/564x/41/47/9d/41479d206f3630737a28469e38f15d86.jpg" alt="Server">
+            <img src="https://i.pinimg.com/564x/0a/63/01/0a6301389808945657095c911003463a.jpg" alt="Code">
+            <img src="https://i.pinimg.com/564x/55/86/6d/55866d6d27806f0e340a160867056637.jpg" alt="Security">
+            <img src="https://i.pinimg.com/564x/6c/42/0d/6c420d40767e7c8441113945a05f778d.jpg" alt="Database">
+        </div>
     </div>
 
-    <div id="suggest" class="view-section">
-        <div style="max-width:400px; margin:auto; background:var(--card); padding:20px; border-radius:15px; border:1px solid var(--border);">
-            <h3>Sugerir Investigación</h3>
-            <input type="text" id="s-user" placeholder="@usuario_ig">
-            <textarea id="s-desc" style="width:100%; background:#000; color:#fff; margin-top:10px; border-radius:8px; border:1px solid var(--border);" rows="3" placeholder="Detalles..."></textarea>
-            <button onclick="alert('Enviado a proabraham887@gmail.com')" style="width:100%; padding:10px; margin-top:10px; background:var(--primary); border:none; border-radius:8px; color:#fff; cursor:pointer;">ENVIAR</button>
+    <div id="soon" class="view-section">
+        <div class="card" style="text-align:center;">
+            <h2>Próximamente...</h2>
+            <p>Monitoreo en tiempo real v7.0</p>
+            <p>Integración con Redes Neuronales</p>
+            <p>Servidor Dedicado Pro_Abraham 24/7</p>
+            <div style="font-size:3rem; margin-top:20px;">🚀</div>
         </div>
     </div>
 </div>
 
+<div class="wallpaper-tool">
+    <label style="font-size:0.7rem; color:var(--text-dim)">LINK DE FONDO (URL)</label>
+    <input type="text" id="wp-link" placeholder="Pegar link de foto/video..." style="background:#000; color:#fff; border:1px solid var(--border); padding:5px; border-radius:5px; width:150px; font-size:0.7rem;">
+    <button onclick="changeWP()" style="padding:5px; background:var(--primary); color:white; border:none; border-radius:5px; font-size:0.7rem; cursor:pointer;">APLICAR</button>
+</div>
+
 <script>
-    const agentNames = ["Viper-1", "Shadow-2", "Ghost-3", "Alpha-4", "Raven-5", "Titan-6", "Omega-7", "Specter-8", "Phantom-9", "Neon-10", "Cobra-11", "Delta-12", "Frost-13", "Blade-14", "Rogue-15", "Ozone-16", "Sniper-17", "Vector-18", "Matrix-19", "Aero-20", "Zion-21", "Hunter-22", "Storm-23", "Proxy-24", "Echo-25", "Zenith-26"];
-    const targetPool = ["Santi_X", "Vale_Luna", "Xime_R", "Mateo_V", "Leo_G", "Cami_P", "Fer_T", "Adri_M", "Sofi_F", "Diego_D", "Isa_K", "Nico_S", "Vale_J", "Seba_B", "Dani_R", "Gaby_H"];
+    const targetPool = ["Santi_X", "Vale_Luna", "Xime_R", "Mateo_V", "Leo_G", "Cami_P", "Fer_T", "Adri_M", "Sofi_F", "Diego_D"];
 
-    function checkPassword() {
-        const val = document.getElementById('passInput').value;
-        if(val.toLowerCase() === "abraham") {
+    function login() {
+        if(document.getElementById('passIn').value.toLowerCase() === "abraham") {
             document.getElementById('lock').style.display = 'none';
-            document.getElementById('status-text').innerText = "ONLINE";
-            initSystem();
-        } else {
-            if ("vibrate" in navigator) navigator.vibrate(500);
-            alert("Acceso Denegado");
-        }
+            document.getElementById('st').innerText = "ONLINE";
+            init();
+        } else { alert("Acceso Denegado"); }
     }
 
-    function initSystem() {
-        // Música Random
-        const randIdx = Math.floor(Math.random() * 20);
-        document.getElementById('yt-player').src = `https://www.youtube.com/embed/videoseries?list=PLVHteamDfSjaoHF5ysXONI04wjsyy-g81&index=${randIdx}&autoplay=1`;
+    function init() {
+        const rand = Math.floor(Math.random() * 20);
+        document.getElementById('yt').src = `https://www.youtube.com/embed/videoseries?list=PLVHteamDfSjaoHF5ysXONI04wjsyy-g81&index=${rand}&autoplay=1`;
         
-        // Generar Unidades
-        const grid = document.getElementById('account-grid');
-        grid.innerHTML = "";
-        agentNames.forEach((name, i) => {
-            grid.innerHTML += `
-                <div class="account-mini" id="acc-${i}">
-                    <div style="display:flex; justify-content:space-between; font-size:0.7rem;">
-                        <b>${name}</b>
-                        <span style="color:var(--success)">●</span>
-                    </div>
-                    <div id="task-${i}" style="font-size:0.6rem; color:var(--text-dim)">IDLE</div>
-                </div>
-            `;
-        });
-
-        addLog("Núcleo Abraham OS v5.1 iniciado.", "success");
-        startCycle();
+        setInterval(() => {
+            const user = targetPool[Math.floor(Math.random() * targetPool.length)];
+            const chance = Math.random();
+            if(chance < 0.6) {
+                log(`EXITO: <b style="color:white">@${user}</b> sincronizado. Enviando a base de datos... haciendo copia de seguridad.`, 'success');
+            } else {
+                log(`PRIVADO: <b style="color:white">@${user}</b>. Enviando solicitud desde la cuenta <b style="color:var(--primary)">pro_abraham</b>...`, 'warn');
+            }
+        }, 4000);
     }
 
-    function addLog(msg, type) {
+    function log(msg, type) {
         const container = document.getElementById('log-container');
         const div = document.createElement('div');
-        div.className = 'log-entry';
-        const sounds = { success: 'snd-success', warn: 'snd-warn', error: 'snd-fail' };
-        
-        if(sounds[type]) {
-            const s = document.getElementById(sounds[type]);
-            s.currentTime = 0; s.play().catch(()=>{});
-        }
-
-        div.style.borderColor = type === 'success' ? 'var(--success)' : (type === 'warn' ? 'var(--warning)' : 'var(--danger)');
+        div.style.marginBottom = "10px";
+        div.style.paddingLeft = "10px";
+        div.style.borderLeft = `3px solid ${type === 'success' ? 'var(--success)' : 'var(--warning)'}`;
         div.innerHTML = `<span style="color:var(--text-dim)">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
         container.prepend(div);
     }
 
-    function startCycle() {
-        setInterval(() => {
-            const id = Math.floor(Math.random() * agentNames.length);
-            const user = targetPool[Math.floor(Math.random() * targetPool.length)];
-            const unit = document.getElementById(`acc-${id}`);
-            const chance = Math.random();
-
-            if(!unit) return;
-            unit.classList.add('working');
-
-            setTimeout(() => {
-                if(chance < 0.6) {
-                    addLog(`EXITO: <b style="color:white">@${user}</b> sincronizado. Enviando a base de datos... haciendo copia de seguridad.`, 'success');
-                    updateDB(user, 'VERIFICADO');
-                } else if(chance < 0.9) {
-                    addLog(`PRIVADO: <b style="color:white">@${user}</b>. Enviando solicitud desde la cuenta <b style="color:var(--primary)">pro_abraham</b>...`, 'warn');
-                    updateDB(user, 'PENDIENTE');
-                } else {
-                    addLog(`ERROR: Fallo en nodo <b style="color:white">@${user}</b>.`, 'error');
-                }
-                unit.classList.remove('working');
-            }, 3000);
-        }, 4000);
-    }
-
-    function updateDB(user, status) {
-        const body = document.getElementById('db-body');
-        const row = document.createElement('tr');
-        row.innerHTML = `<td style="padding:10px; border-bottom:1px solid var(--border)">@${user}</td><td style="padding:10px; border-bottom:1px solid var(--border); font-size:0.7rem; opacity:0.6;">${status}</td>`;
-        body.prepend(row);
-    }
-
-    function showView(viewId, btn) {
+    function showV(id, btn) {
         document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
+        document.getElementById(id).classList.add('active');
         btn.classList.add('active');
+    }
+
+    function changeWP() {
+        const link = document.getElementById('wp-link').value;
+        if(link) {
+            document.body.style.backgroundImage = `url('${link}')`;
+            alert("Fondo de pantalla actualizado.");
+        }
     }
 </script>
 </body>
