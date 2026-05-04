@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abraham OS v6.0 | Ultimate Edition</title>
+    <title>Abraham OS v6.5 | Enterprise Edition</title>
     <style>
         :root {
             --primary: #3b82f6; --bg: #020617; --sidebar: #010409;
@@ -15,15 +15,15 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg); background-size: cover; background-position: center; color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
         /* --- SIDEBAR --- */
-        .sidebar { width: 90px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 100; position: relative; }
-        .nav-item { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 15px; color: var(--text-dim); font-size: 1.3rem; border: 1px solid transparent; }
+        .sidebar { width: 100px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 100; position: relative; }
+        .nav-item { width: 55px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 15px; color: var(--text-dim); font-size: 1.4rem; border: 1px solid transparent; }
         .nav-item:hover { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
         .nav-item.active { background: var(--primary); color: white; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
 
-        .credits { position: absolute; bottom: 10px; font-size: 0.5rem; text-align: center; color: var(--text-dim); padding: 0 5px; pointer-events: none; }
+        .credits { position: absolute; bottom: 15px; font-size: 0.55rem; text-align: center; color: var(--text-dim); padding: 0 5px; line-height: 1.3; border-top: 1px solid var(--border); pt: 10px; }
 
         /* --- MAIN CONTENT --- */
-        .main { flex: 1; display: flex; flex-direction: column; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(5px); }
+        .main { flex: 1; display: flex; flex-direction: column; background: rgba(2, 6, 23, 0.88); backdrop-filter: blur(8px); }
         header { height: 60px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 30px; justify-content: space-between; }
 
         .view-section { flex: 1; padding: 25px; overflow-y: auto; display: none; }
@@ -32,38 +32,45 @@
 
         /* --- COMPONENTES --- */
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        .console-box { background: #000; border-radius: 12px; height: 70vh; padding: 20px; font-family: 'Consolas', monospace; font-size: 0.85rem; overflow-y: auto; color: #d8dee9; border: 1px solid var(--border); }
+        .console-box { background: #000; border-radius: 12px; height: 72vh; padding: 20px; font-family: 'Consolas', monospace; font-size: 0.85rem; overflow-y: auto; color: #d8dee9; border: 1px solid var(--border); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
         
-        .evidence-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-        .evidence-grid img { width: 100%; border-radius: 10px; border: 1px solid var(--border); filter: grayscale(0.5); transition: 0.3s; }
-        .evidence-grid img:hover { filter: grayscale(0); transform: scale(1.03); }
+        .evidence-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+        .evidence-grid img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); filter: grayscale(0.4); transition: 0.3s; }
+        .evidence-grid img:hover { filter: grayscale(0); transform: translateY(-5px); border-color: var(--primary); }
 
-        .review-card { border-left: 4px solid var(--success); padding-left: 15px; margin-bottom: 15px; }
+        .review-card { border-left: 4px solid var(--primary); background: rgba(255,255,255,0.03); padding: 15px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .stars { color: #fbbf24; font-size: 0.8rem; margin-bottom: 5px; }
         
         #lock { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .wallpaper-tool { position: fixed; bottom: 20px; right: 20px; background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); z-index: 50; }
+        .wallpaper-tool { position: fixed; bottom: 20px; right: 20px; background: var(--card); padding: 12px; border-radius: 12px; border: 1px solid var(--border); z-index: 50; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div id="lock">
-    <div style="text-align: center; background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid var(--border);">
-        <h2 style="color:var(--primary)">Abraham OS v6.0</h2>
-        <input type="password" id="passIn" placeholder="Password" style="width:100%; padding:12px; background:#000; border:1px solid var(--border); color:#fff; border-radius:8px; margin-top:15px; text-align:center;">
-        <button onclick="login()" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px; margin-top:15px; cursor:pointer; font-weight:bold;">INGRESAR</button>
+    <div style="text-align: center; background: var(--card); padding: 45px; border-radius: 25px; border: 1px solid var(--border); width: 360px;">
+        <h2 style="color:var(--primary); margin:0;">Abraham OS v6.5</h2>
+        <p style="font-size:0.7rem; color:var(--text-dim); margin-bottom:20px;">RESTRICTED ACCESS</p>
+        <input type="password" id="passIn" placeholder="Password" style="width:100%; padding:14px; background:#000; border:1px solid var(--border); color:#fff; border-radius:10px; text-align:center; font-size:1rem;">
+        <button onclick="login()" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; margin-top:20px; cursor:pointer; font-weight:bold; letter-spacing:1px;">AUTENTICAR</button>
     </div>
 </div>
 
 <div class="sidebar">
-    <div class="nav-item active" onclick="showV('console', this)" title="Consola">📜</div>
-    <div class="nav-item" onclick="showV('playlist', this)" title="Música">🎵</div>
-    <div class="nav-item" onclick="showV('reviews', this)" title="Reseñas">⭐</div>
-    <div class="nav-item" onclick="showV('evidence', this)" title="Evidencias">📸</div>
-    <div class="nav-item" onclick="showV('soon', this)" title="Próximamente">⏳</div>
+    <div class="nav-item active" onclick="showV('console', this)" title="Consola Principal">📜</div>
+    <div class="nav-item" onclick="showV('playlist', this)" title="Playlist Abraham">🎵</div>
+    <div class="nav-item" onclick="showV('reviews', this)" title="Testimonios">⭐</div>
+    <div class="nav-item" onclick="showV('evidence', this)" title="Archivo de Evidencias">📸</div>
+    <div class="nav-item" onclick="showV('soon', this)" title="Proyectos Futuros">⏳</div>
     
     <div class="credits">
-        © PRO_ABRAHAM<br>
-        Colaboradores:<br>
+        <b>© PRO_ABRAHAM</b><br><br>
+        <span style="opacity:0.7">Colaboradores:</span><br>
         Eduardo YT VIP<br>
         Gerardl Craftman
     </div>
@@ -71,101 +78,132 @@
 
 <div class="main">
     <header>
-        <div style="font-size:0.8rem; color:var(--text-dim)">UPLINK: <span id="st" style="color:var(--danger)">OFFLINE</span></div>
-        <div style="font-weight:bold;">SISTEMA CENTRAL</div>
+        <div style="font-size:0.8rem; color:var(--text-dim)">KERNEL_SYNC: <span id="st" style="color:var(--danger)">OFFLINE</span></div>
+        <div style="font-weight:bold; letter-spacing:1px; color:var(--primary)">ABRAHAM_INTELLIGENCE</div>
     </header>
 
     <div id="console" class="view-section active">
-        <div class="console-box" id="log-container"></div>
+        <div class="console-box" id="log-container">
+            <div style="color:var(--success)">> [INIT] Cargando módulos de seguridad...</div>
+            <div style="color:var(--success)">> [INIT] Enlace establecido con pro_abraham.</div>
+        </div>
     </div>
 
     <div id="playlist" class="view-section">
         <div class="card" style="text-align:center;">
-            <h3>Reproductor en Vivo</h3>
-            <iframe id="yt" width="100%" height="400" src="" frameborder="0" allow="autoplay" style="border-radius:10px;"></iframe>
-            <p style="margin-top:10px; color:var(--text-dim)">Control de Playlist: Cyber-Mix</p>
+            <h3 style="margin-top:0">Abraham Music Station</h3>
+            <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px; border:1px solid var(--border);">
+                <iframe id="yt" style="position:absolute; top:0; left:0; width:100%; height:100%;" src="" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+            </div>
+            <p style="margin-top:15px; font-size:0.8rem; color:var(--text-dim)">Sintonizando Playlist Oficial de YouTube Music</p>
         </div>
     </div>
 
     <div id="reviews" class="view-section">
-        <div class="card">
-            <h3>Reseñas de Clientes</h3>
-            <div class="review-card">
-                <b>@User_01:</b> "Increíble la velocidad de respuesta, 100% confiable."
-            </div>
-            <div class="review-card">
-                <b>@Gamer_Pro:</b> "El mejor servicio de monitoreo que he probado."
-            </div>
-            <div class="review-card">
-                <b>@Dev_Girl:</b> "Abraham y su equipo son muy profesionales. Recomendado."
-            </div>
-            <div class="review-card">
-                <b>@Anon_X:</b> "Copia de seguridad realizada con éxito. Gracias."
-            </div>
+        <h3>Reputación del Sistema</h3>
+        <div class="review-card">
+            <div class="stars">★★★★★</div>
+            <b>@Cyber_Ghost:</b> "Excelente trabajo de recuperación. La copia de seguridad fue instantánea."
+        </div>
+        <div class="review-card">
+            <div class="stars">★★★★★</div>
+            <b>@Laura_Net:</b> "Abraham resolvió mi problema de acceso en minutos. Muy profesional el equipo."
+        </div>
+        <div class="review-card">
+            <div class="stars">★★★★★</div>
+            <b>@Admin_Vip:</b> "El sistema de monitoreo es de los más avanzados que he visto. Saludos a Eduardo YT VIP por el soporte."
+        </div>
+        <div class="review-card">
+            <div class="stars">★★★★★</div>
+            <b>@Tech_Master:</b> "Envío de solicitudes desde pro_abraham verificado. Todo legal y rápido."
+        </div>
+        <div class="review-card">
+            <div class="stars">★★★★★</div>
+            <b>@User_Hype:</b> "Gerardl Craftman hizo un diseño increíble. La funcionalidad es 10/10."
+        </div>
+        <div class="review-card">
+            <div class="stars">★★★★☆</div>
+            <b>@Alpha_Dev:</b> "Gran capacidad de respuesta en la base de datos. Sin duda los mejores."
+        </div>
+        <div class="review-card">
+            <div class="stars">★★★★★</div>
+            <b>@Z_Control:</b> "Gracias por la seguridad social media shield. Recomendado al 100%."
         </div>
     </div>
 
     <div id="evidence" class="view-section">
-        <h3>Evidencias de Trabajo</h3>
+        <h3>Archivo de Evidencias Técnicas</h3>
         <div class="evidence-grid">
-            <img src="https://i.pinimg.com/564x/41/47/9d/41479d206f3630737a28469e38f15d86.jpg" alt="Server">
-            <img src="https://i.pinimg.com/564x/0a/63/01/0a6301389808945657095c911003463a.jpg" alt="Code">
-            <img src="https://i.pinimg.com/564x/55/86/6d/55866d6d27806f0e340a160867056637.jpg" alt="Security">
-            <img src="https://i.pinimg.com/564x/6c/42/0d/6c420d40767e7c8441113945a05f778d.jpg" alt="Database">
+            <img src="https://i.pinimg.com/564x/41/47/9d/41479d206f3630737a28469e38f15d86.jpg" alt="Servidor">
+            <img src="https://i.pinimg.com/564x/0a/63/01/0a6301389808945657095c911003463a.jpg" alt="Código">
+            <img src="https://i.pinimg.com/564x/55/86/6d/55866d6d27806f0e340a160867056637.jpg" alt="Seguridad">
+            <img src="https://i.pinimg.com/564x/6c/42/0d/6c420d40767e7c8441113945a05f778d.jpg" alt="DB">
+            <img src="https://i.pinimg.com/564x/a4/0c/3d/a40c3d69941a319409f583e72c83b8b1.jpg" alt="Matrix">
+            <img src="https://i.pinimg.com/564x/8a/7d/5a/8a7d5a52862d4e78553f1969a397441a.jpg" alt="Tech">
         </div>
     </div>
 
     <div id="soon" class="view-section">
-        <div class="card" style="text-align:center;">
-            <h2>Próximamente...</h2>
-            <p>Monitoreo en tiempo real v7.0</p>
-            <p>Integración con Redes Neuronales</p>
-            <p>Servidor Dedicado Pro_Abraham 24/7</p>
-            <div style="font-size:3rem; margin-top:20px;">🚀</div>
+        <div class="card" style="text-align:center; padding:50px;">
+            <div style="font-size:4rem; margin-bottom:20px;">🛠️</div>
+            <h2>Fase v7.0 en desarrollo</h2>
+            <ul style="list-style:none; padding:0; line-height:2; color:var(--text-dim)">
+                <li>• Bypass de Seguridad Biométrica (Pruebas)</li>
+                <li>• Inteligencia Artificial pro_abraham AI</li>
+                <li>• Encriptación de Grado Militar Quantum</li>
+                <li>• Expansión de Red de Colaboradores</li>
+            </ul>
         </div>
     </div>
 </div>
 
 <div class="wallpaper-tool">
-    <label style="font-size:0.7rem; color:var(--text-dim)">LINK DE FONDO (URL)</label>
-    <input type="text" id="wp-link" placeholder="Pegar link de foto/video..." style="background:#000; color:#fff; border:1px solid var(--border); padding:5px; border-radius:5px; width:150px; font-size:0.7rem;">
-    <button onclick="changeWP()" style="padding:5px; background:var(--primary); color:white; border:none; border-radius:5px; font-size:0.7rem; cursor:pointer;">APLICAR</button>
+    <label style="font-size:0.6rem; color:var(--text-dim); display:block; margin-bottom:5px;">PERSONALIZAR FONDO (URL)</label>
+    <div style="display:flex; gap:5px;">
+        <input type="text" id="wp-link" placeholder="Link de Pinterest/Imgur..." style="background:#000; color:#fff; border:1px solid var(--border); padding:6px; border-radius:5px; width:160px; font-size:0.7rem;">
+        <button onclick="changeWP()" style="padding:6px 12px; background:var(--primary); color:white; border:none; border-radius:5px; font-size:0.7rem; cursor:pointer; font-weight:bold;">SET</button>
+    </div>
 </div>
 
 <script>
-    const targetPool = ["Santi_X", "Vale_Luna", "Xime_R", "Mateo_V", "Leo_G", "Cami_P", "Fer_T", "Adri_M", "Sofi_F", "Diego_D"];
+    const targetPool = ["Santi_X", "Vale_Luna", "Xime_R", "Mateo_V", "Leo_G", "Cami_P", "Fer_T", "Adri_M", "Sofi_F", "Diego_D", "Nico_Net", "Pau_Web", "Ivan_Core", "Lili_Shield"];
 
     function login() {
         if(document.getElementById('passIn').value.toLowerCase() === "abraham") {
             document.getElementById('lock').style.display = 'none';
             document.getElementById('st').innerText = "ONLINE";
             init();
-        } else { alert("Acceso Denegado"); }
+        } else { alert("Acceso Denegado. Clave incorrecta."); }
     }
 
     function init() {
-        const rand = Math.floor(Math.random() * 20);
+        // Cargar canción random de la playlist
+        const rand = Math.floor(Math.random() * 25);
         document.getElementById('yt').src = `https://www.youtube.com/embed/videoseries?list=PLVHteamDfSjaoHF5ysXONI04wjsyy-g81&index=${rand}&autoplay=1`;
         
+        // Iniciar ciclo de consola automático
         setInterval(() => {
             const user = targetPool[Math.floor(Math.random() * targetPool.length)];
             const chance = Math.random();
             if(chance < 0.6) {
                 log(`EXITO: <b style="color:white">@${user}</b> sincronizado. Enviando a base de datos... haciendo copia de seguridad.`, 'success');
             } else {
-                log(`PRIVADO: <b style="color:white">@${user}</b>. Enviando solicitud desde la cuenta <b style="color:var(--primary)">pro_abraham</b>...`, 'warn');
+                log(`PRIVADO: <b style="color:white">@${user}</b> detectado. Enviando solicitud desde la cuenta <b style="color:var(--primary)">pro_abraham</b>...`, 'warn');
             }
-        }, 4000);
+        }, 4500);
     }
 
     function log(msg, type) {
         const container = document.getElementById('log-container');
         const div = document.createElement('div');
-        div.style.marginBottom = "10px";
-        div.style.paddingLeft = "10px";
+        div.style.marginBottom = "12px";
+        div.style.paddingLeft = "12px";
         div.style.borderLeft = `3px solid ${type === 'success' ? 'var(--success)' : 'var(--warning)'}`;
         div.innerHTML = `<span style="color:var(--text-dim)">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
         container.prepend(div);
+        
+        // Mantener consola limpia
+        if(container.children.length > 50) container.lastChild.remove();
     }
 
     function showV(id, btn) {
@@ -179,7 +217,8 @@
         const link = document.getElementById('wp-link').value;
         if(link) {
             document.body.style.backgroundImage = `url('${link}')`;
-            alert("Fondo de pantalla actualizado.");
+            document.body.style.backgroundSize = "cover";
+            document.body.style.backgroundPosition = "center";
         }
     }
 </script>
