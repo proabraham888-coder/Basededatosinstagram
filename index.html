@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligence System | Pro_Abraham</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --bg: #020617;
+            --card: #0f172a;
+            --border: #1e293b;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent: #10b981;
+        }
+
+        * { box-sizing: border-box; transition: all 0.3s ease; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 320px; background: #010409; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; }
+        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 12px; height: 12px; background: var(--primary); border-radius: 2px; }
+
+        .section-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin: 20px 0 10px; }
+        .console { flex: 1; background: #000; border-radius: 8px; padding: 12px; font-family: 'SFMono-Regular', monospace; font-size: 0.7rem; overflow-y: auto; color: #88c0d0; border: 1px solid var(--border); }
+        .db-view { height: 150px; background: rgba(255,255,255,0.02); border-radius: 8px; margin-top: 10px; padding: 10px; font-size: 0.65rem; border: 1px solid var(--border); }
+
+        /* --- MAIN --- */
+        .main { flex: 1; display: flex; flex-direction: column; }
+        header { padding: 20px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(10px); }
+        
+        .sys-info { display: flex; gap: 25px; }
+        .sys-item { display: flex; flex-direction: column; }
+        .sys-label { font-size: 0.6rem; color: var(--text-dim); }
+        .sys-val { font-size: 0.8rem; font-weight: 600; color: var(--primary); }
+
+        .content { padding: 30px; overflow-y: auto; flex: 1; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+        /* --- CARDS --- */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
+        .card.active { border-color: var(--primary); box-shadow: 0 0 20px rgba(59, 130, 246, 0.15); }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .user-name { font-weight: 700; font-size: 0.95rem; }
+        .status-pill { font-size: 0.6rem; padding: 2px 8px; border-radius: 10px; background: rgba(148, 163, 184, 0.1); color: var(--text-dim); }
+        .active .status-pill { background: rgba(16, 185, 129, 0.1); color: var(--accent); }
+
+        .prog-bg { width: 100%; height: 4px; background: #020617; border-radius: 2px; margin: 15px 0; }
+        .prog-fill { width: 0%; height: 100%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+
+        .details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.7rem; color: var(--text-dim); }
+        .detail-box { background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px; }
+        .detail-box b { color: var(--text); display: block; margin-top: 2px; }
+
+        /* --- AUTH SCREEN --- */
+        #lock { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .auth-card { background: var(--card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); text-align: center; width: 400px; }
+        .input-auth { background: #000; border: 1px solid var(--border); padding: 12px; width: 100%; border-radius: 8px; color: #fff; margin: 20px 0; text-align: center; font-family: inherit; }
+        .btn-auth { background: var(--primary); color: #fff; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; }
+    </style>
+</head>
+<body>
+
+<div id="lock">
+    <div class="auth-card">
+        <div class="logo-icon" style="margin: 0 auto 20px; width: 40px; height: 40px;"></div>
+        <h2 style="margin:0">Abraham Intelligence</h2>
+        <p style="color: var(--text-dim); font-size: 0.8rem;">Ingrese credenciales de acceso nivel Root</p>
+        <input type="password" class="input-auth" id="pass" placeholder="Password">
+        <button class="btn-auth" onclick="unlock()">Desbloquear Sistema</button>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="logo"><div class="logo-icon"></div> PRO_ABRAHAM OS</div>
+    
+    <div class="section-label">Real-time Terminal</div>
+    <div class="console" id="terminal">
+        <div>> System standby...</div>
+    </div>
+
+    <div class="section-label">Database Index</div>
+    <div class="db-view" id="db"></div>
+</div>
+
+<div class="main">
+    <header>
+        <div class="sys-info">
+            <div class="sys-item"><span class="sys-label">UPLINK</span><span class="sys-val">PRO_ABRAHAM</span></div>
+            <div class="sys-item"><span class="sys-label">MEM_USE</span><span class="sys-val" id="mem">14.2 GB</span></div>
+            <div class="sys-item"><span class="sys-label">LATENCY</span><span class="sys-val">12ms</span></div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="text-align: right;"><div style="font-weight: 700; font-size: 0.9rem;">Abraham</div><div style="font-size: 0.6rem; color: var(--accent);">ROOT ACCESS</div></div>
+            <div style="width: 35px; height: 35px; background: var(--primary); border-radius: 50%;"></div>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="grid" id="grid"></div>
+    </div>
+</div>
+
+<script>
+    const agentNames = ["INTEL_A", "INTEL_B", "INTEL_C", "INTEL_D", "SYNC_01", "SYNC_02", "SCAN_X", "SCAN_Y", "CORE_01", "CORE_02", "UPLINK_A", "UPLINK_B", "DATA_X", "DATA_Y", "NODE_01", "NODE_02"];
+    const targets = ["Alexander", "Eduardo", "Santiago", "Valentina", "Mateo", "Leonardo", "Ricardo", "Camila", "Rodrigo", "Mauricio"];
+    
+    function unlock() {
+        const p = document.getElementById('pass').value;
+        if(p === "abraham") { // CONTRASEÑA: abraham
+            document.getElementById('lock').style.display = 'none';
+            init();
+        } else {
+            alert("Acceso Denegado");
+        }
+    }
+
+    function init() {
+        const grid = document.getElementById('grid');
+        agentNames.forEach((name, i) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.id = `card-${i}`;
+            card.innerHTML = `
+                <div class="card-header">
+                    <div><div class="user-name" id="name-${i}">Standby</div><div style="font-size: 0.6rem; color: var(--text-dim);">${name}</div></div>
+                    <div class="status-pill" id="status-${i}">READY</div>
+                </div>
+                <div class="details">
+                    <div class="detail-box">TARGET<b>@---</b></div>
+                    <div class="detail-box">UPTIME<b>0.0s</b></div>
+                </div>
+                <div class="prog-bg"><div class="prog-fill" id="bar-${i}"></div></div>
+                <div class="details">
+                    <div class="detail-box">SYNC<b>0%</b></div>
+                    <div class="detail-box">DATA<b>0 KB</b></div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+        startLoop();
+    }
+
+    function addLog(msg) {
+        const term = document.getElementById('terminal');
+        const div = document.createElement('div');
+        div.style.marginBottom = '4px';
+        div.innerHTML = `<span style="color:var(--primary)">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+        term.prepend(div);
+        if(term.children.length > 30) term.lastChild.remove();
+    }
+
+    function addToDB(name) {
+        const db = document.getElementById('db');
+        const entry = document.createElement('div');
+        entry.style.color = 'var(--text-dim)';
+        entry.innerHTML = `> REG_${Math.floor(Math.random()*10000)} | @${name} | DB_SUCCESS`;
+        db.prepend(entry);
+    }
+
+    function runExtraction(id) {
+        const card = document.getElementById(`card-${id}`);
+        if(card.classList.contains('active')) return;
+
+        const name = targets[Math.floor(Math.random()*targets.length)] + "_" + Math.floor(Math.random()*99);
+        card.classList.add('active');
+        card.querySelector('.user-name').innerText = "@" + name;
+        card.querySelector('.status-pill').innerText = "EXTRACTING";
+        
+        addLog(`Inyectando protocolo en <b style="color:white">@${name}</b>...`);
+
+        let p = 0;
+        const interval = setInterval(() => {
+            p += Math.floor(Math.random()*10) + 2;
+            if(p > 100) p = 100;
+            
+            card.querySelector('.prog-fill').style.width = p + "%";
+            card.querySelectorAll('b')[0].innerText = "@" + name;
+            card.querySelectorAll('b')[2].innerText = p + "%";
+            card.querySelectorAll('b')[3].innerText = (p * 4.2).toFixed(1) + " MB";
+
+            if(p >= 100) {
+                clearInterval(interval);
+                addLog(`Sincronización de <b style="color:var(--accent)">@${name}</b> enviada a pro_abraham`);
+                addToDB(name);
+                setTimeout(() => {
+                    card.classList.remove('active');
+                    card.querySelector('.status-pill').innerText = "READY";
+                    card.querySelector('.prog-fill').style.width = "0%";
+                    card.querySelector('.user-name').innerText = "Standby";
+                }, 3000);
+            }
+        }, 600);
+    }
+
+    function startLoop() {
+        setInterval(() => {
+            const rand = Math.floor(Math.random()*16);
+            runExtraction(rand);
+            document.getElementById('mem').innerText = (14.2 + (Math.random()*0.5)).toFixed(1) + " GB";
+        }, 2000);
+    }
+</script>
+</body>
+</html>
+
